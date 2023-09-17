@@ -7,11 +7,26 @@
 // Example: 5! = 5 x 4 x 3 x 2 x 1 = 120
 // factorial(5); // 120
 let factorial = function(n) {
+    if (n === 0) { // base case
+        return 1;
+    } else if (n < 0) {
+        return null;
+    } else { // recursive case
+        return n * factorial(n - 1);
+    }
 };
 
 // 2. Compute the sum of an array of integers.
 // sum([1,2,3,4,5,6]); // 21
 let sum = function(array) {
+    // handle the edge case of an empty array + base case
+    if (array.length === 0) {
+        return 0;
+    } else { // recursive case
+        var cast = array.map(x => x); // create a shallow copy
+        var num = cast.shift(); // removes the first element from an array
+        return num + sum(cast); // use callback
+    }
 };
 
 // 3. Sum all numbers in an array containing nested arrays.
@@ -23,16 +38,33 @@ let arraySum = function(array) {
 // isEven(2) // true
 // isEven(9) // false
 let isEven = function(n) {
+    if (Math.abs(n) > 1) {
+        return isEven(Math.abs(n) - 2);
+    }
+
+    // base case
+    if (n === 1) { return false; }
+    if (n === 0) { return true; }
 };
 
 // 5. Sum all integers below a given integer.
 // sumBelow(10); // 45
 // sumBelow(7); // 21
+
 let sumBelow = function(n) {
+    if (n) { 
+        var sign = Math.sign(n);
+        return (Math.abs(n) - 1 + sumBelow(Math.abs(n) - 1)) * sign;
+    };
+
+    // base case
+    return 0;
 };
 
 // 6. Get the integers within a range (x, y).
 // range(2,9); // [3,4,5,6,7,8]
+// range(6,3); // [5,4]
+// range(6,4); // [5,4]
 let range = function(x, y) {
 };
 
@@ -40,8 +72,16 @@ let range = function(x, y) {
 // The exponent of a number says how many times the base number is used as a factor.
 // 8^2 = 8 x 8 = 64. Here, 8 is the base and 2 is the exponent.
 // exponent(4,3); // 64
+// exponent(4,-2); 
 // https://www.khanacademy.org/computing/computer-science/algorithms/recursive-algorithms/a/computing-powers-of-a-number
 let exponent = function(base, exp) {
+    if (exp === 0) return 1;
+    if (exp > 0) {
+        return base * exponent(base, exp - 1)
+    } else {
+        // handle negative exponent
+        return (1 / base) * exponent(base, exp + 1);
+    }
 };
 
 // 8. Determine if a number is a power of two.
@@ -49,11 +89,26 @@ let exponent = function(base, exp) {
 // powerOfTwo(16); // true
 // powerOfTwo(10); // false
 let powerOfTwo = function(n) {
+    if (n === 1) { return true; }
+
+    if (Number.isInteger(n) && n > 1) {
+        return powerOfTwo(n / 2);
+    }
+
+    return false;
 };
 
 // 9. Write a function that reverses a string.
 // reverse("hello"); // olleh 
 let reverse = function(string) {
+    // handle the edge case when string is empty
+    if (string.length === 0) {
+        return string;
+    } else {
+        var cast = string.split('').map(x => x); // create a shallow copy
+        var letter = cast.pop(); // remove the last element from an array
+        return letter + reverse(cast.join('')); // use callback
+    }
 };
 
 // 10. Write a function that determines if a string is a palindrome.
@@ -61,24 +116,59 @@ let reverse = function(string) {
 // palindrome("rotor") // true
 // palindrome("wow") // true
 let palindrome = function(string) {
+    if (string.length <= 1) { return true; } 
+
+    var firstLetter = string.toLowerCase().split('').shift();
+    var lastLetter = string.toLowerCase().split('').pop();
+
+    if (firstLetter === lastLetter) {
+        return palindrome(string.toLowerCase().substring(1, string.length - 1));
+    }
+
+    return false;
 };
 
 // 11. Write a function that returns the remainder of x divided by y without using the
 // modulo (%) operator.
-// modulo(5,2) // 1
+// modulo(-8, -3) // 1
 // modulo(17,5) // 2
 // modulo(22,6) // 4
 let modulo = function(x, y) {
+    if (y === 0) { return NaN; }
+    
+    if (y < 0) { y = -y; }
+    if (x < 0) { return -modulo(-x, y); }
+    
+    if (x < y) return x;
+    return modulo(x - y, y);
 };
 
 // 12. Write a function that multiplies two numbers without using the * operator or
 // Math methods.
+// multiply(0,32) // 0
+// multiply(-8,-3) // 24
+// multiply(-79,82) // -6478
 let multiply = function(x, y) {
+    if (y === 0 || x === 0) { return 0; }
+
+    if (y > 0){
+        return x + multiply(x, y - 1);
+    }
+    else {
+        return -x + multiply(x, y + 1);
+    }
 };
 
 // 13. Write a function that divides two numbers without using the / operator or
 // Math methods to arrive at an approximate quotient (ignore decimal endings).
 let divide = function(x, y) {
+    if (y === 0 && x === 0) { return NaN; }
+    if (x < y) { return 0; }
+    
+    if (x < 0) return -divide(-x, y);
+    if (y < 0) return -divide(x, -y);
+
+    return 1 + divide(x - y, y);
 };
 
 // 14. Find the greatest common divisor (gcd) of two positive numbers. The GCD of two
